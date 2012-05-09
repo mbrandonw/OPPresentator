@@ -13,6 +13,8 @@ To use just have your application's window inherit from `OPPresentatorWindow`, a
 #endif
 ```
 
+I want to give credit to Todd Reed, who created [Touchposé](https://github.com/toddreed/Touchpose), which gave me the inspiration to make this. I just wanted something a little lighter and simpler.
+
 ##Installation
 
 We love [CocoaPods](http://github.com/cocoapods/cocoapods), so we recommend you use it.
