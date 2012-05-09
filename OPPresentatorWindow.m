@@ -25,6 +25,7 @@
 
 @interface OPPresentatorWindow (/**/)
 @property (nonatomic, strong) NSMutableArray *touchViews;
+-(BOOL) hasMirroredScreen;
 @end
 
 @implementation OPPresentatorWindow
@@ -34,8 +35,13 @@
 -(void) sendEvent:(UIEvent *)event {
     [super sendEvent:event];
     
+    // early out if there is no mirrored screen connected
+    if (! [self hasMirroredScreen])
+        return ;
+    
     NSSet *touches = [event allTouches];
     
+    // lazily create views that will be placed underneath touches
     self.touchViews = self.touchViews ?: [NSMutableArray new];
     NSInteger diff = (NSUInteger)[touches count] - (NSInteger)[self.touchViews count];
     for (NSInteger i = 0; i < diff; i++)
@@ -51,23 +57,29 @@
         [self addSubview:v];
     }
     
+    // move the touch views to be underneath the touches
     NSUInteger idx = 0;
-    BOOL done = YES;
     for (UITouch *touch in touches)
     {
         UIView *v = [self.touchViews objectAtIndex:idx];
         CGPoint p = [touch locationInView:self];
         v.center = p;
-        v.hidden = NO;
+        v.hidden = touch.phase == UITouchPhaseEnded;
         [v.superview bringSubviewToFront:v];
         idx++;
-        
-        done = done && touch.phase == UITouchPhaseEnded;
     }
+}
+
+-(BOOL) hasMirroredScreen {
     
-    if (done)
-        for (UIView *v in self.touchViews)
-            v.hidden = YES;
+    if ([[UIScreen screens] count] == 1)
+        return NO;
+    
+    for (UIScreen *screen in [UIScreen screens])
+        if (screen.mirroredScreen)
+            return YES;
+    
+    return NO;
 }
 
 @end
