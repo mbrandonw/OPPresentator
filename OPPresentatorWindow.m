@@ -30,8 +30,6 @@
 
 @implementation OPPresentatorWindow
 
-@synthesize touchViews = _touchViews;
-
 -(void) sendEvent:(UIEvent *)event {
     [super sendEvent:event];
     
