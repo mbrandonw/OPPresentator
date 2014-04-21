@@ -34,16 +34,16 @@
   [super sendEvent:event];
 
   // early out if there is no mirrored screen connected
-  if (! [self hasMirroredScreen])
+  if (! [self hasMirroredScreen]) {
     return ;
+  }
 
   NSSet *touches = [event allTouches];
 
   // lazily create views that will be placed underneath touches
   self.touchViews = self.touchViews ?: [NSMutableArray new];
   NSInteger diff = (NSUInteger)[touches count] - (NSInteger)[self.touchViews count];
-  for (NSInteger i = 0; i < diff; i++)
-  {
+  for (NSInteger i = 0; i < diff; i++) {
     UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 50.0f, 50.0f)];
     v.layer.cornerRadius = v.frame.size.width/2.0f;
     v.layer.masksToBounds = YES;
@@ -57,8 +57,7 @@
 
   // move the touch views to be underneath the touches
   NSUInteger idx = 0;
-  for (UITouch *touch in touches)
-  {
+  for (UITouch *touch in touches) {
     UIView *v = [self.touchViews objectAtIndex:idx];
     CGPoint p = [touch locationInView:self];
     v.center = p;
@@ -70,12 +69,15 @@
 
 -(BOOL) hasMirroredScreen {
 
-  if ([[UIScreen screens] count] == 1)
+  if ([[UIScreen screens] count] == 1) {
     return NO;
+  }
 
-  for (UIScreen *screen in [UIScreen screens])
-    if (screen.mirroredScreen)
+  for (UIScreen *screen in [UIScreen screens]) {
+    if (screen.mirroredScreen) {
       return YES;
+    }
+  }
 
   return NO;
 }
