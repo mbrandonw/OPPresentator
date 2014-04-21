@@ -31,53 +31,53 @@
 @implementation OPPresentatorWindow
 
 -(void) sendEvent:(UIEvent *)event {
-    [super sendEvent:event];
-    
-    // early out if there is no mirrored screen connected
-    if (! [self hasMirroredScreen])
-        return ;
-    
-    NSSet *touches = [event allTouches];
-    
-    // lazily create views that will be placed underneath touches
-    self.touchViews = self.touchViews ?: [NSMutableArray new];
-    NSInteger diff = (NSUInteger)[touches count] - (NSInteger)[self.touchViews count];
-    for (NSInteger i = 0; i < diff; i++)
-    {
-        UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 50.0f, 50.0f)];
-        v.layer.cornerRadius = v.frame.size.width/2.0f;
-        v.layer.masksToBounds = YES;
-        v.layer.borderColor = [UIColor colorWithWhite:1.0f alpha:0.9f].CGColor;
-        v.layer.borderWidth = 2.0f;
-        v.alpha = 0.75f;
-        v.backgroundColor = [UIColor grayColor];
-        [self.touchViews addObject:v];
-        [self addSubview:v];
-    }
-    
-    // move the touch views to be underneath the touches
-    NSUInteger idx = 0;
-    for (UITouch *touch in touches)
-    {
-        UIView *v = [self.touchViews objectAtIndex:idx];
-        CGPoint p = [touch locationInView:self];
-        v.center = p;
-        v.hidden = touch.phase == UITouchPhaseEnded;
-        [v.superview bringSubviewToFront:v];
-        idx++;
-    }
+  [super sendEvent:event];
+
+  // early out if there is no mirrored screen connected
+  if (! [self hasMirroredScreen])
+    return ;
+
+  NSSet *touches = [event allTouches];
+
+  // lazily create views that will be placed underneath touches
+  self.touchViews = self.touchViews ?: [NSMutableArray new];
+  NSInteger diff = (NSUInteger)[touches count] - (NSInteger)[self.touchViews count];
+  for (NSInteger i = 0; i < diff; i++)
+  {
+    UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 50.0f, 50.0f)];
+    v.layer.cornerRadius = v.frame.size.width/2.0f;
+    v.layer.masksToBounds = YES;
+    v.layer.borderColor = [UIColor colorWithWhite:1.0f alpha:0.9f].CGColor;
+    v.layer.borderWidth = 2.0f;
+    v.alpha = 0.75f;
+    v.backgroundColor = [UIColor grayColor];
+    [self.touchViews addObject:v];
+    [self addSubview:v];
+  }
+
+  // move the touch views to be underneath the touches
+  NSUInteger idx = 0;
+  for (UITouch *touch in touches)
+  {
+    UIView *v = [self.touchViews objectAtIndex:idx];
+    CGPoint p = [touch locationInView:self];
+    v.center = p;
+    v.hidden = touch.phase == UITouchPhaseEnded;
+    [v.superview bringSubviewToFront:v];
+    idx++;
+  }
 }
 
 -(BOOL) hasMirroredScreen {
-    
-    if ([[UIScreen screens] count] == 1)
-        return NO;
-    
-    for (UIScreen *screen in [UIScreen screens])
-        if (screen.mirroredScreen)
-            return YES;
-    
+
+  if ([[UIScreen screens] count] == 1)
     return NO;
+
+  for (UIScreen *screen in [UIScreen screens])
+    if (screen.mirroredScreen)
+      return YES;
+
+  return NO;
 }
 
 @end
