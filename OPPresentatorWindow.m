@@ -35,7 +35,7 @@
 
   // early out if there is no mirrored screen connected
   if (! [self hasMirroredScreen]) {
-//    return ;
+    return ;
   }
 
   NSSet *touches = [event allTouches];
